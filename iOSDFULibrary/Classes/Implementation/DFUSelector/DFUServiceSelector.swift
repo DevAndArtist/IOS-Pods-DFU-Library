@@ -47,7 +47,7 @@ internal class DFUServiceSelector : BaseDFUExecutor, DFUStarterPeripheralDelegat
         self.controller = controller
         self.peripheral = DFUStarterPeripheral(initiator)
         
-        self.peripheral.delegate = self
+        self.peripheral.delegate = self // NOT HERE
     }
     
     func start() {

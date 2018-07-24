@@ -175,7 +175,7 @@ internal struct PacketReceiptNotification {
     }
 }
 
-@objc internal class DFUControlPoint : NSObject, CBPeripheralDelegate {
+@objc internal class DFUControlPoint : NSObject, CBPeripheralDelegate, PeripheralProxyReceiver {
     static let UUID = CBUUID(string: "00001531-1212-EFDE-1523-785FEABCD123")
     
     static func matches(_ characteristic: CBCharacteristic) -> Bool {
@@ -195,6 +195,8 @@ internal struct PacketReceiptNotification {
     internal var valid: Bool {
         return characteristic.properties.isSuperset(of: [.write, .notify])
     }
+
+    internal var peripheralProxy: PeripheralProxy?
     
     // MARK: - Initialization
     
@@ -221,8 +223,9 @@ internal struct PacketReceiptNotification {
         let peripheral = characteristic.service.peripheral
         
         // Set the peripheral delegate to self
-        peripheral.delegate = self
-        
+//        peripheral.delegate = self // HERE
+        link(to: peripheral)
+
         logger.v("Enabling notifications for \(characteristic.uuid.uuidString)...")
         logger.d("peripheral.setNotifyValue(true, for: \(characteristic.uuid.uuidString))")
         peripheral.setNotifyValue(true, for: characteristic)
@@ -247,7 +250,8 @@ internal struct PacketReceiptNotification {
         let peripheral = characteristic.service.peripheral
         
         // Set the peripheral delegate to self
-        peripheral.delegate = self
+//        peripheral.delegate = self // HERE
+        link(to: peripheral)
         
         switch request {
         case .initDfuParameters(let req):
@@ -287,7 +291,8 @@ internal struct PacketReceiptNotification {
         let peripheral = characteristic.service.peripheral
         
         // Set the peripheral delegate to self
-        peripheral.delegate = self
+//        peripheral.delegate = self // HERE
+        link(to: peripheral)
     }
     
     // MARK: - Peripheral Delegate callbacks

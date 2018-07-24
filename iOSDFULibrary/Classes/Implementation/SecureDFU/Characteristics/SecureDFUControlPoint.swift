@@ -294,7 +294,7 @@ internal struct SecureDFUPacketReceiptNotification {
     }
 }
 
-internal class SecureDFUControlPoint : NSObject, CBPeripheralDelegate {
+internal class SecureDFUControlPoint : NSObject, CBPeripheralDelegate, PeripheralProxyReceiver {
     static let UUID = CBUUID(string: "8EC90001-F315-4F60-9FB8-838830DAEA50")
     
     static func matches(_ characteristic: CBCharacteristic) -> Bool {
@@ -312,6 +312,8 @@ internal class SecureDFUControlPoint : NSObject, CBPeripheralDelegate {
     internal var valid: Bool {
         return characteristic.properties.isSuperset(of: [.write, .notify])
     }
+
+    internal var peripheralProxy: PeripheralProxy?
     
     // MARK: - Initialization
     init(_ characteristic: CBCharacteristic, _ logger: LoggerHelper) {
@@ -341,8 +343,9 @@ internal class SecureDFUControlPoint : NSObject, CBPeripheralDelegate {
         let peripheral = characteristic.service.peripheral
         
         // Set the peripheral delegate to self
-        peripheral.delegate = self
-        
+//        peripheral.delegate = self // HERE
+        link(to: peripheral)
+
         logger.v("Enabling notifications for \(characteristic.uuid.uuidString)...")
         logger.d("peripheral.setNotifyValue(true, for: \(characteristic.uuid.uuidString))")
         peripheral.setNotifyValue(true, for: characteristic)
@@ -365,8 +368,9 @@ internal class SecureDFUControlPoint : NSObject, CBPeripheralDelegate {
         let peripheral = characteristic.service.peripheral
         
         // Set the peripheral delegate to self
-        peripheral.delegate = self
-        
+//        peripheral.delegate = self // HERE
+        link(to: peripheral)
+
         logger.v("Writing to characteristic \(characteristic.uuid.uuidString)...")
         logger.d("peripheral.writeValue(0x\(request.data.hexString), for: \(characteristic.uuid.uuidString), type: .withResponse)")
         peripheral.writeValue(request.data, for: characteristic, type: .withResponse)
@@ -389,8 +393,9 @@ internal class SecureDFUControlPoint : NSObject, CBPeripheralDelegate {
         let peripheral = characteristic.service.peripheral
         
         // Set the peripheral delegate to self
-        peripheral.delegate = self
-        
+//        peripheral.delegate = self // HERE
+        link(to: peripheral)
+
         logger.v("Writing to characteristic \(characteristic.uuid.uuidString)...")
         logger.d("peripheral.writeValue(0x\(request.data.hexString), for: \(characteristic.uuid.uuidString), type: .withResponse)")
         peripheral.writeValue(request.data, for: characteristic, type: .withResponse)
@@ -414,8 +419,9 @@ internal class SecureDFUControlPoint : NSObject, CBPeripheralDelegate {
         let peripheral = characteristic.service.peripheral
         
         // Set the peripheral delegate to self
-        peripheral.delegate = self
-        
+//        peripheral.delegate = self // HERE
+        link(to: peripheral)
+
         logger.a("Uploading firmware...")
         logger.v("Sending firmware to DFU Packet characteristic...")
     }

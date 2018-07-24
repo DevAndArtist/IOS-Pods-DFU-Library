@@ -22,7 +22,7 @@
 
 import CoreBluetooth
 
-@objc internal class SecureDFUService : NSObject, CBPeripheralDelegate, DFUService {
+@objc internal class SecureDFUService : NSObject, CBPeripheralDelegate, DFUService, PeripheralProxyReceiver {
     static internal let UUID = CBUUID(string: "FE59")
     
     static func matches(_ service: CBService) -> Bool {
@@ -53,7 +53,8 @@ import CoreBluetooth
     private var packetReceiptNotificationNumber: UInt16 = 0
     private var range: Range<Int>?
     // -- End --
-    
+
+    internal var peripheralProxy: PeripheralProxy?
     // MARK: - Initialization
     
     required init(_ service: CBService, _ logger: LoggerHelper) {
@@ -124,8 +125,9 @@ import CoreBluetooth
         let peripheral = service.peripheral
         
         // Set the peripheral delegate to self
-        peripheral.delegate = self
-        
+//        peripheral.delegate = self // HERE
+        link(to: peripheral)
+
         // Discover DFU characteristics
         logger.v("Discovering characteristics in DFU Service...")
         logger.d("peripheral.discoverCharacteristics(nil, for: \(SecureDFUService.UUID.uuidString))")

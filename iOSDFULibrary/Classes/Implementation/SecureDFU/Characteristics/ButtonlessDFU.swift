@@ -93,7 +93,7 @@ internal struct ButtonlessDFUResponse {
     }
 }
 
-internal class ButtonlessDFU : NSObject, CBPeripheralDelegate {
+internal class ButtonlessDFU : NSObject, CBPeripheralDelegate, PeripheralProxyReceiver {
     static let EXPERIMENTAL_UUID         = CBUUID(string: "8E400001-F315-4F60-9FB8-838830DAEA50") // the same UUID as the service
     static let WITHOUT_BOND_SHARING_UUID = CBUUID(string: "8EC90003-F315-4F60-9FB8-838830DAEA50")
     static let WITH_BOND_SHARING_UUID    = CBUUID(string: "8EC90004-F315-4F60-9FB8-838830DAEA50")
@@ -130,6 +130,8 @@ internal class ButtonlessDFU : NSObject, CBPeripheralDelegate {
     internal var maySupportSettingName: Bool {
         return characteristic.uuid.isEqual(ButtonlessDFU.WITHOUT_BOND_SHARING_UUID)
     }
+
+    internal var peripheralProxy: PeripheralProxy?
     
     // MARK: - Initialization
     init(_ characteristic: CBCharacteristic, _ logger: LoggerHelper) {
@@ -155,8 +157,9 @@ internal class ButtonlessDFU : NSObject, CBPeripheralDelegate {
         let peripheral = characteristic.service.peripheral
         
         // Set the peripheral delegate to self
-        peripheral.delegate = self
-        
+//        peripheral.delegate = self // HERE
+        link(to: peripheral)
+
         if characteristic.properties.contains(.indicate) {
             logger.v("Enabling indications for \(characteristic.uuid.uuidString)...")
         } else {
@@ -183,8 +186,9 @@ internal class ButtonlessDFU : NSObject, CBPeripheralDelegate {
         let peripheral = characteristic.service.peripheral
         
         // Set the peripheral delegate to self
-        peripheral.delegate = self
-        
+//        peripheral.delegate = self // HERE
+        link(to: peripheral)
+
         logger.v("Writing to characteristic \(characteristic.uuid.uuidString)...")
         logger.d("peripheral.writeValue(0x\(request.data.hexString), for: \(characteristic.uuid.uuidString), type: .withResponse)")
         peripheral.writeValue(request.data, for: characteristic, type: .withResponse)

@@ -24,7 +24,7 @@ import CoreBluetooth
 
 internal typealias VersionCallback = (_ major: UInt8, _ minor: UInt8) -> Void
 
-@objc internal class DFUVersion : NSObject, CBPeripheralDelegate {
+@objc internal class DFUVersion : NSObject, CBPeripheralDelegate, PeripheralProxyReceiver {
     static let UUID = CBUUID(string: "00001534-1212-EFDE-1523-785FEABCD123")
     
     static func matches(_ characteristic: CBCharacteristic) -> Bool {
@@ -40,6 +40,8 @@ internal typealias VersionCallback = (_ major: UInt8, _ minor: UInt8) -> Void
     internal var valid: Bool {
         return characteristic.properties.contains(.read)
     }
+
+    internal var peripheralProxy: PeripheralProxy?
     
     // MARK: - Initialization
     
@@ -66,8 +68,9 @@ internal typealias VersionCallback = (_ major: UInt8, _ minor: UInt8) -> Void
         let peripheral = characteristic.service.peripheral
         
         // Set the peripheral delegate to self
-        peripheral.delegate = self
-        
+//        peripheral.delegate = self // HERE
+        link(to: peripheral)
+
         logger.v("Reading DFU Version number...")
         logger.d("peripheral.readValue(\(characteristic.uuid.uuidString))")
         peripheral.readValue(for: characteristic)

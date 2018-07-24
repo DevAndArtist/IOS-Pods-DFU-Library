@@ -55,7 +55,7 @@ internal class SecureDFUExecutor : DFUExecutor, SecureDFUPeripheralDelegate {
     
     func start() {
         error = nil
-        peripheral.delegate = self
+        peripheral.delegate = self // NOT HERE
         peripheral.start()
     }
     

@@ -46,7 +46,7 @@ internal class LegacyDFUExecutor : DFUExecutor, LegacyDFUPeripheralDelegate {
     
     func start() {
         error = nil
-        peripheral.delegate = self
+        peripheral.delegate = self // NOT HERE
         peripheral.start()
     }
     

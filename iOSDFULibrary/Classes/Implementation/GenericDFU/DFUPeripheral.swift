@@ -46,7 +46,7 @@ internal protocol BaseDFUPeripheralAPI : class, DFUController {
     func resetDevice()
 }
 
-internal class BaseDFUPeripheral<TD : BasePeripheralDelegate> : NSObject, BaseDFUPeripheralAPI, CBPeripheralDelegate, CBCentralManagerDelegate {
+internal class BaseDFUPeripheral<TD : BasePeripheralDelegate> : NSObject, BaseDFUPeripheralAPI, CBPeripheralDelegate, CBCentralManagerDelegate, CentralManagerProxyReceiver, PeripheralProxyReceiver {
     /// Bluetooth Central Manager used to scan for the peripheral.
     internal let centralManager: CBCentralManager
     /// The DFU Target peripheral.
@@ -81,6 +81,10 @@ internal class BaseDFUPeripheral<TD : BasePeripheralDelegate> : NSObject, BaseDF
     
     /// A flag set when upload has been aborted.
     fileprivate var aborted: Bool = false
+
+    //
+    internal var peripheralProxy: PeripheralProxy?
+    internal var centralManagerProxy: CentralManagerProxy?
     
     init(_ initiator: DFUServiceInitiator) {
         self.centralManager = initiator.centralManager
@@ -95,8 +99,9 @@ internal class BaseDFUPeripheral<TD : BasePeripheralDelegate> : NSObject, BaseDF
     
     func start() {
         aborted = false
-        centralManager.delegate = self
-        
+//        centralManager.delegate = self // HERE
+        link(to: centralManager)
+
         if peripheral!.state != .connected {
             connect()
         } else {
@@ -127,8 +132,12 @@ internal class BaseDFUPeripheral<TD : BasePeripheralDelegate> : NSObject, BaseDF
     }
     
     func destroy() {
-        centralManager.delegate = nil
-        peripheral?.delegate = nil
+//        centralManager.delegate = nil // HERE
+        unlink(from: centralManager)
+//        peripheral?.delegate = nil // HERE
+        if let peripheral = self.peripheral {
+            unlink(from: peripheral)
+        }
         delegate = nil
     }
     
@@ -358,7 +367,8 @@ internal class BaseDFUPeripheral<TD : BasePeripheralDelegate> : NSObject, BaseDF
         } else {
             logger.d("peripheral.discoverServices(nil)")
         }
-        peripheral!.delegate = self
+//        peripheral!.delegate = self // HERE
+        link(to: peripheral!)
         peripheral!.discoverServices(services)
     }
     
@@ -529,7 +539,8 @@ internal class BaseCommonDFUPeripheral<TD : DFUPeripheralDelegate, TS : DFUServi
     
     func switchToNewPeripheralAndConnect() {
         // Release the previous peripheral
-        peripheral!.delegate = nil
+//        peripheral!.delegate = nil // HERE
+        unlink(from: peripheral!)
         peripheral = nil
         cleanUp()
         
