@@ -36,6 +36,7 @@ final class CentralManagerProxy : NSObject {
   init(route manager: CBCentralManager) {
     self.manager = manager
     delegate = manager.delegate
+    super.init()
   }
 
   ///

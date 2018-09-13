@@ -36,6 +36,7 @@ final class PeripheralProxy : NSObject {
   init(route peripheral: CBPeripheral) {
     self.peripheral = peripheral
     delegate = peripheral.delegate
+    super.init()
     print("❇️", "PeripheralProxy<\(ObjectIdentifier(self))>")
   }
 
@@ -51,9 +52,8 @@ final class PeripheralProxy : NSObject {
     // Create a new connection
     receiver.peripheralProxy = self
     // Link the delegation to self
-    print("3️⃣✅")
     peripheral.delegate = self
-    print("4️⃣✅", self)
+    print("2️⃣✅", self)
   }
 
   ///
@@ -61,18 +61,18 @@ final class PeripheralProxy : NSObject {
     // The peripheral must be linked to self
     guard
       peripheral.delegate === self
-    else { return print("❎", peripheral.delegate) }
+    else { return print("❎", peripheral.delegate as Any) }
     // Re-assign the old delegate back to the peripheral
     peripheral.delegate = delegate
     print("1️⃣❎", peripheral.delegate as Any)
 
     // Remove self from the receiver
     receiver?.peripheralProxy = nil
-    print("2️⃣❎", receiver?.peripheralProxy)
+    print("2️⃣❎", receiver?.peripheralProxy as Any)
     // Remove any connections
     delegate = nil
     receiver = nil
-    print("3️⃣❎", delegate, receiver)
+    print("3️⃣❎", delegate as Any, receiver as Any)
   }
 
   ///
