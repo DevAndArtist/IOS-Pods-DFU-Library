@@ -36,6 +36,7 @@ final class PeripheralProxy : NSObject {
   init(route peripheral: CBPeripheral) {
     self.peripheral = peripheral
     delegate = peripheral.delegate
+    print("❇️", String(format: "PeripheralProxy<%p>", self))
   }
 
   ///
@@ -60,7 +61,7 @@ final class PeripheralProxy : NSObject {
     // The peripheral must be linked to self
     guard
       peripheral.delegate === self
-    else { return print("❎") }
+    else { return print("❎", peripheral.delegate) }
     // Re-assign the old delegate back to the peripheral
     peripheral.delegate = delegate
     print("1️⃣❎", peripheral.delegate)
@@ -78,7 +79,7 @@ final class PeripheralProxy : NSObject {
   deinit {
     print(
       """
-      PeripheralProxy will be deallocated.
+      🚸 deallocating \(String(format: "PeripheralProxy<%p>", self))
       Delegate: \(delegate as Any)
       Receiver: \(receiver as Any)
       """
