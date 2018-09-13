@@ -30,7 +30,11 @@ final class CentralManagerProxy : NSObject {
   weak var receiver: CentralManagerProxyReceiver?
 
   ///
+  weak var manager: CBCentralManager?
+
+  ///
   init(route manager: CBCentralManager) {
+    self.manager = manager
     delegate = manager.delegate
   }
 
@@ -73,6 +77,7 @@ final class CentralManagerProxy : NSObject {
       Receiver: \(receiver as Any)
       """
     )
+    manager.map(unlink(from:))
   }
 }
 

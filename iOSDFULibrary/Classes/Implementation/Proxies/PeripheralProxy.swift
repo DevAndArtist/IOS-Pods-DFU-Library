@@ -30,7 +30,11 @@ final class PeripheralProxy : NSObject {
   weak var receiver: PeripheralProxyReceiver?
 
   ///
+  weak var peripheral: CBPeripheral?
+
+  ///
   init(route peripheral: CBPeripheral) {
+    self.peripheral = peripheral
     delegate = peripheral.delegate
   }
 
@@ -79,6 +83,7 @@ final class PeripheralProxy : NSObject {
       Receiver: \(receiver as Any)
       """
     )
+    peripheral.map(unlink(from:))
   }
 }
 
