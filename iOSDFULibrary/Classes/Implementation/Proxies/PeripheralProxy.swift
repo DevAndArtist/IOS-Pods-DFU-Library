@@ -58,9 +58,9 @@ final class PeripheralProxy : NSObject {
 
   ///
   func unlink(from peripheral: CBPeripheral) {
-    // The peripheral must be linked to self
+    // The peripheral must be linked to self or the delegate is must be nil
     guard
-      peripheral.delegate === self
+      peripheral.delegate === self || peripheral.delegate === nil
     else { return print("❎", peripheral.delegate as Any) }
     // Re-assign the old delegate back to the peripheral
     peripheral.delegate = delegate

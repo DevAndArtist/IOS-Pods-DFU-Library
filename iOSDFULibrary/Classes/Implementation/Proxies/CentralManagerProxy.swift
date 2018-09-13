@@ -58,8 +58,10 @@ final class CentralManagerProxy : NSObject {
 
   ///
   func unlink(from manager: CBCentralManager) {
-    // The peripheral must be linked to self
-    guard manager.delegate === self else { return }
+    // The manager must be linked to self or the delegate is must be nil
+    guard
+      manager.delegate === self || manager.delegate === nil
+    else { return }
     // Re-assign the old delegate back to the peripheral
     manager.delegate = delegate
     // Remove self from the receiver
