@@ -75,7 +75,7 @@ final class CentralManagerProxy : NSObject {
   deinit {
     print(
       """
-      CentralManagerProxy will be deallocated.
+      🚸 deallocating CentralManagerProxy<\(ObjectIdentifier(self))>
       Delegate: \(delegate as Any)
       Receiver: \(receiver as Any)
       """
