@@ -50,7 +50,7 @@ extension PeripheralProxyReceiver {
   func unlink(from peripheral: CBPeripheral) {
     precondition(
       peripheral.delegate !== self &&
-        peripheral.delegate as? Self == nil,
+      peripheral.delegate as? Self == nil,
       "Something linked this or a similar object directly to the peripheral."
     )
     guard

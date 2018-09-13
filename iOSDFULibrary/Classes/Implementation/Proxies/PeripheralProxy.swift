@@ -40,25 +40,34 @@ final class PeripheralProxy : NSObject {
     if self.receiver?.peripheralProxy === self {
       self.receiver?.peripheralProxy = nil
     }
+    print("1️⃣✅", receiver)
     // Assign caller to self
     self.receiver = receiver
     // Create a new connection
     receiver.peripheralProxy = self
     // Link the delegation to self
+    print("3️⃣✅")
     peripheral.delegate = self
+    print("4️⃣✅", self)
   }
 
   ///
   func unlink(from peripheral: CBPeripheral) {
     // The peripheral must be linked to self
-    guard peripheral.delegate === self else { return }
+    guard
+      peripheral.delegate === self
+    else { return print("❎") }
     // Re-assign the old delegate back to the peripheral
     peripheral.delegate = delegate
+    print("1️⃣❎", peripheral.delegate)
+
     // Remove self from the receiver
     receiver?.peripheralProxy = nil
+    print("2️⃣❎", receiver?.peripheralProxy)
     // Remove any connections
     delegate = nil
     receiver = nil
+    print("3️⃣❎", delegate, receiver)
   }
 
   ///
