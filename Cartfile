@@ -1,1 +1,1 @@
-github "weichsel/ZIPFoundation" ~> 0.9
+github "DevAndArtist/ZIPFoundation" "dylib-compatibility-issue"
